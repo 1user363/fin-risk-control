@@ -166,6 +166,24 @@ def save_risks(task_id: int, risks: list) -> None:
         conn.close()
 
 
+def replace_risks(task_id: int, risks: list) -> None:
+    """用复核后的最终风险点覆盖 risk 表（先删后插），保证统计与终审一致。"""
+    conn = get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM risk WHERE task_id = %s", (task_id,))
+            for r in risks:
+                cur.execute(
+                    """
+                    INSERT INTO risk (task_id, risk_type, risk_level, description, evidence, suggestion, engine)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s)
+                    """,
+                    (task_id, r.risk_type.value, r.risk_level.value, r.description, r.evidence, r.suggestion, r.engine),
+                )
+    finally:
+        conn.close()
+
+
 def save_report(task_id: int, report, is_final: bool = False) -> None:
     """保存报告（存 JSON 快照 + 关键字段）。"""
     report_json = json.dumps(report.model_dump(mode="json"), ensure_ascii=False)

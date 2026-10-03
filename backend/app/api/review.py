@@ -71,10 +71,11 @@ def submit_review(task_id: int, payload: dict):
     reviewer = payload.get("reviewer", "未知")
     result = apply_review(state, actions, reviewer=reviewer)
 
-    # 落库：复核日志 + 终审报告
+    # 落库：复核日志 + 同步风险点 + 终审报告
     reviewer_id = db.get_or_create_user(reviewer)
     for entry in result["review_log"]:
         db.save_review_log(task_id, reviewer_id, entry)
+    db.replace_risks(task_id, result["risks"])  # 用复核后的风险点覆盖 risk 表
     if result["final_report"]:
         db.save_report(task_id, result["final_report"], is_final=True)
         db.update_task(task_id, conclusion=result["final_report"].conclusion)
