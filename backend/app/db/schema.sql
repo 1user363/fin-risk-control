@@ -16,6 +16,8 @@
 --   4. 状态/等级/类型用 ENUM —— 约束取值范围，非法值直接拒绝。
 -- ============================================================
 
+SET NAMES utf8mb4;
+
 CREATE DATABASE IF NOT EXISTS risk_control
   DEFAULT CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;

@@ -197,7 +197,7 @@ def get_report(task_id: int, is_final: bool = False):
 
 
 def get_stats():
-    """简单统计：任务数 / 风险数 / 高风险数。"""
+    """统计：任务数 / 风险数 / 高风险数 + 各维度分布（供看板图表）。"""
     conn = get_connection()
     try:
         with conn.cursor() as cur:
@@ -207,7 +207,23 @@ def get_stats():
             total_risks = cur.fetchone()["n"]
             cur.execute("SELECT COUNT(*) AS n FROM risk WHERE risk_level = '高'")
             high_risks = cur.fetchone()["n"]
-        return {"total_tasks": total_tasks, "total_risks": total_risks, "high_risks": high_risks}
+            # 风险类型分布（饼图）
+            cur.execute("SELECT risk_type AS name, COUNT(*) AS value FROM risk GROUP BY risk_type")
+            risk_types = cur.fetchall()
+            # 风险等级分布（柱状图）
+            cur.execute("SELECT risk_level AS name, COUNT(*) AS value FROM risk GROUP BY risk_level")
+            risk_levels = cur.fetchall()
+            # 任务结论分布
+            cur.execute("SELECT conclusion AS name, COUNT(*) AS value FROM task WHERE conclusion IS NOT NULL GROUP BY conclusion")
+            conclusions = cur.fetchall()
+        return {
+            "total_tasks": total_tasks,
+            "total_risks": total_risks,
+            "high_risks": high_risks,
+            "risk_types": risk_types,
+            "risk_levels": risk_levels,
+            "conclusions": conclusions,
+        }
     finally:
         conn.close()
 

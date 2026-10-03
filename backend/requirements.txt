@@ -12,6 +12,7 @@ python-multipart
 
 # ===== 向量 / 存储 =====
 faiss-cpu
+langchain-community
 pymysql
 
 # ===== 文档解析 =====
@@ -19,5 +20,9 @@ pymupdf
 pypdf
 rapidocr-onnxruntime
 
-# ===== 模板 =====
+# ===== 报告 / 模板 =====
 jinja2
+reportlab
+
+# ===== 测试 =====
+pytest

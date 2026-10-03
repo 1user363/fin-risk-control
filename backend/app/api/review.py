@@ -26,6 +26,11 @@ def trigger_review(task_id: int):
     # 跑流水线（同步阻塞；含 LLM 调用，耗时数秒，生产环境应改后台任务）
     state = run_pipeline(task["task_no"], document["file_path"], document["file_name"])
 
+    # 出错则记录并返回
+    if state.get("error"):
+        db.update_task(task_id, status="error", error_msg=state["error"])
+        raise HTTPException(500, f"审查失败：{state['error']}")
+
     # 结果落库
     if state.get("entities"):
         db.save_entity(task_id, state["entities"])
