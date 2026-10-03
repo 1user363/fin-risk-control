@@ -74,8 +74,24 @@ def render_report_markdown(report: Report) -> str:
 
 # ===== PDF 导出 =====
 
-_PDF_FONT_PATH = "C:/Windows/Fonts/simhei.ttf"  # 黑体（Windows 自带，纯 TTF）
+# 中文字体候选（跨平台：Windows / Linux），部署到 Linux 服务器时需装对应字体
+_PDF_FONT_CANDIDATES = [
+    "C:/Windows/Fonts/simhei.ttf",                             # Windows 黑体
+    "C:/Windows/Fonts/msyh.ttc",                               # Windows 微软雅黑
+    "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",  # Linux Noto CJK
+    "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc",          # Linux 文泉驿
+    "/usr/share/fonts/truetype/arphic/uming.ttc",              # Linux AR PL UMing
+]
 _pdf_font_registered = False
+
+
+def _find_font() -> str:
+    """查找系统中第一个可用的中文字体。"""
+    import os
+    for path in _PDF_FONT_CANDIDATES:
+        if os.path.exists(path):
+            return path
+    return _PDF_FONT_CANDIDATES[0]
 
 
 def _overdue_text(v) -> str:
@@ -96,7 +112,7 @@ def render_report_pdf(report: Report) -> bytes:
 
     global _pdf_font_registered
     if not _pdf_font_registered:
-        pdfmetrics.registerFont(TTFont("Hei", _PDF_FONT_PATH))
+        pdfmetrics.registerFont(TTFont("Hei", _find_font(), subfontIndex=0))
         _pdf_font_registered = True
 
     buf = io.BytesIO()

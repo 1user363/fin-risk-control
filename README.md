@@ -146,3 +146,4 @@ cd ../backend
 
 - `docs/architecture.md` — 系统架构设计
 - `docs/agent-specs.md` — 5 个 Agent 的输入/输出契约
+- `docs/deploy.md` — 云服务器部署指南
