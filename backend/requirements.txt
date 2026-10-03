@@ -1,0 +1,23 @@
+# ===== 编排 / LLM =====
+langgraph
+langchain
+langchain-openai
+
+# ===== 结构化输出 / API =====
+pydantic
+fastapi
+uvicorn
+python-dotenv
+python-multipart
+
+# ===== 向量 / 存储 =====
+faiss-cpu
+pymysql
+
+# ===== 文档解析 =====
+pymupdf
+pypdf
+rapidocr-onnxruntime
+
+# ===== 模板 =====
+jinja2

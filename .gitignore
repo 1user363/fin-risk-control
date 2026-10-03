@@ -1,0 +1,22 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+backend/.venv/
+
+# ===== 运行时产物 =====
+backend/data/*
+!backend/data/.gitkeep
+
+# ===== 日志 =====
+*.log
+
+# ===== 数据库备份（可能含真实业务数据，绝不入库） =====
+db_backup/
+
+# ===== 密钥（真实 .env 不入库） =====
+.env
+
+# ===== 前端 =====
+frontend/node_modules/
+frontend/dist/

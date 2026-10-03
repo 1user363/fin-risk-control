@@ -1,0 +1,36 @@
+# 金融文本风控审查报告
+
+**任务编号**：{{ report.task_id }}
+**审查文档**：{{ report.file_name }}
+**初审结论**：{{ report.conclusion }}
+
+## 一、实体信息摘要
+
+{% if report.entities %}
+- 企业名称：{{ report.entities.company_name }}
+- 授信金额：{{ report.entities.credit_amount or '—' }} 万元
+- 授信期限：{{ report.entities.credit_term_months or '—' }} 个月
+- 年化利率：{{ report.entities.interest_rate or '—' }}%
+- 资产负债率：{{ report.entities.debt_ratio or '—' }}%
+- 担保主体：{{ report.entities.guarantors | join('、') or '—' }}
+- 是否逾期：{% if report.entities.has_overdue is none %}未提及{% elif report.entities.has_overdue %}是{% else %}否{% endif %}
+{% else %}
+（未抽取到结构化实体信息）
+{% endif %}
+
+## 二、风险识别结果
+
+{{ report.risk_summary }}
+
+{% for r in report.risks %}
+### 风险 {{ loop.index }}：{{ r.risk_type.value }}（{{ r.risk_level.value }}）｜来源：{{ r.engine }}
+- **风险描述**：{{ r.description }}
+- **原文依据**：{{ r.evidence }}
+- **整改建议**：{{ r.suggestion }}
+{% endfor %}
+
+## 三、综合合规建议
+
+{% for s in report.suggestions %}
+- {{ s }}
+{% endfor %}
